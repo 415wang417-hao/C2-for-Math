@@ -1,0 +1,272 @@
+[
+  {
+    "key": "appel1977",
+    "type": "article",
+    "title": "The Solution of the Four-Color-Map Problem",
+    "year": "1977",
+    "doi": "10.1038/scientificamerican1077-108",
+    "source": "Crossref Primary DOI",
+    "status": "VERIFIED_PRIMARY",
+    "token_f1": 1.0
+  },
+  {
+    "key": "davies2021",
+    "type": "article",
+    "title": "Advancing mathematics by guiding human intuition with AI",
+    "year": "2021",
+    "doi": "10.1038/s41586-021-04086-x",
+    "source": "Crossref Primary DOI",
+    "status": "VERIFIED_PRIMARY",
+    "token_f1": 1.0
+  },
+  {
+    "key": "fawzi2022",
+    "type": "article",
+    "title": "Discovering faster matrix multiplication algorithms with reinforcement learning",
+    "year": "2022",
+    "doi": "10.1038/s41586-022-05172-4",
+    "source": "Crossref Primary DOI",
+    "status": "VERIFIED_PRIMARY",
+    "token_f1": 1.0
+  },
+  {
+    "key": "romera2024",
+    "type": "article",
+    "title": "Mathematical discoveries from program search with large language models",
+    "year": "2024",
+    "doi": "10.1038/s41586-023-06924-6",
+    "source": "Crossref Primary DOI",
+    "status": "VERIFIED_PRIMARY",
+    "token_f1": 1.0
+  },
+  {
+    "key": "raayoni2021",
+    "type": "article",
+    "title": "Generating conjectures on fundamental constants with the Ramanujan Machine",
+    "year": "2021",
+    "doi": "10.1038/s41586-021-03229-4",
+    "source": "Crossref Primary DOI",
+    "status": "VERIFIED_PRIMARY",
+    "token_f1": 1.0
+  },
+  {
+    "key": "trinh2024",
+    "type": "article",
+    "title": "Solving olympiad geometry without human demonstrations",
+    "year": "2024",
+    "doi": "10.1038/s41586-023-06747-5",
+    "source": "Crossref Primary DOI",
+    "status": "VERIFIED_PRIMARY",
+    "token_f1": 1.0
+  },
+  {
+    "key": "demoura2008z3",
+    "type": "article",
+    "title": "Z3: An Efficient SMT Solver",
+    "year": "2008",
+    "doi": "10.1007/978-3-540-78800-3_24",
+    "source": "Crossref Primary DOI",
+    "status": "VERIFIED_PRIMARY",
+    "token_f1": 1.0
+  },
+  {
+    "key": "demoura2021lean4",
+    "type": "article",
+    "title": "The Lean 4 Theorem Prover and Programming Language",
+    "year": "2021",
+    "doi": "10.1007/978-3-030-79876-5_37",
+    "source": "Crossref Primary DOI",
+    "status": "VERIFIED_PRIMARY",
+    "token_f1": 1.0
+  },
+  {
+    "key": "szegedy2020",
+    "type": "article",
+    "title": "A Promising Path Towards Autoformalization and General Artificial Intelligence",
+    "year": "2020",
+    "doi": "10.1007/978-3-030-53518-6_1",
+    "source": "Crossref Primary DOI",
+    "status": "VERIFIED_PRIMARY",
+    "token_f1": 1.0
+  },
+  {
+    "key": "cunningham2022",
+    "type": "article",
+    "title": "Towards Autoformalization of Mathematics and Code Correctness: Experiments with Elementary Proofs",
+    "year": "2022",
+    "doi": "10.18653/v1/2022.mathnlp-1.4",
+    "source": "Crossref Primary DOI",
+    "status": "VERIFIED_PRIMARY",
+    "token_f1": 1.0
+  },
+  {
+    "key": "chollet2019",
+    "type": "misc",
+    "title": "On the Measure of Intelligence",
+    "year": "2019",
+    "doi": "10.48550/arXiv.1911.01547",
+    "source": "arXiv DataCite DOI",
+    "status": "VERIFIED_DATACITE",
+    "token_f1": 1.0
+  },
+  {
+    "key": "polu2020",
+    "type": "misc",
+    "title": "Generative Language Modeling for Automated Theorem Proving",
+    "year": "2020",
+    "doi": "10.48550/arXiv.2009.03393",
+    "source": "arXiv DataCite DOI",
+    "status": "VERIFIED_DATACITE",
+    "token_f1": 1.0
+  },
+  {
+    "key": "wu2022auto",
+    "type": "misc",
+    "title": "Autoformalization with Large Language Models",
+    "year": "2022",
+    "doi": "10.48550/arXiv.2205.12615",
+    "source": "arXiv DataCite DOI",
+    "status": "VERIFIED_DATACITE",
+    "token_f1": 1.0
+  },
+  {
+    "key": "wei2022cot",
+    "type": "misc",
+    "title": "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models",
+    "year": "2022",
+    "doi": "10.48550/arXiv.2201.11903",
+    "source": "arXiv DataCite DOI",
+    "status": "VERIFIED_DATACITE",
+    "token_f1": 1.0
+  },
+  {
+    "key": "gao2022pal",
+    "type": "misc",
+    "title": "PAL: Program-aided Language Models",
+    "year": "2022",
+    "doi": "10.48550/arXiv.2211.10435",
+    "source": "arXiv DataCite DOI",
+    "status": "VERIFIED_DATACITE",
+    "token_f1": 1.0
+  },
+  {
+    "key": "chen2022pot",
+    "type": "misc",
+    "title": "Program of Thoughts Prompting: Disentangling Computation from Reasoning for Numerical Reasoning Tasks",
+    "year": "2022",
+    "doi": "10.48550/arXiv.2211.12588",
+    "source": "arXiv DataCite DOI",
+    "status": "VERIFIED_DATACITE",
+    "token_f1": 1.0
+  },
+  {
+    "key": "lightman2023",
+    "type": "misc",
+    "title": "Let's Verify Step by Step",
+    "year": "2023",
+    "doi": "10.48550/arXiv.2305.20050",
+    "source": "arXiv DataCite DOI",
+    "status": "VERIFIED_DATACITE",
+    "token_f1": 1.0
+  },
+  {
+    "key": "cobbe2021gsm8k",
+    "type": "misc",
+    "title": "Training Verifiers to Solve Math Word Problems",
+    "year": "2021",
+    "doi": "10.48550/arXiv.2110.14168",
+    "source": "arXiv DataCite DOI",
+    "status": "VERIFIED_DATACITE",
+    "token_f1": 1.0
+  },
+  {
+    "key": "hendrycks2021math",
+    "type": "misc",
+    "title": "Measuring Mathematical Problem Solving With the MATH Dataset",
+    "year": "2021",
+    "doi": "10.48550/arXiv.2103.03874",
+    "source": "arXiv DataCite DOI",
+    "status": "VERIFIED_DATACITE",
+    "token_f1": 1.0
+  },
+  {
+    "key": "huang2023selfcorrect",
+    "type": "misc",
+    "title": "Large Language Models Cannot Self-Correct Reasoning Yet",
+    "year": "2023",
+    "doi": "10.48550/arXiv.2310.01798",
+    "source": "arXiv DataCite DOI",
+    "status": "VERIFIED_DATACITE",
+    "token_f1": 1.0
+  },
+  {
+    "key": "stechly2024selfverif",
+    "type": "misc",
+    "title": "On the Self-Verification Limitations of Large Language Models on Reasoning and Planning Tasks",
+    "year": "2024",
+    "doi": "10.48550/arXiv.2402.08115",
+    "source": "arXiv DataCite DOI",
+    "status": "VERIFIED_DATACITE",
+    "token_f1": 1.0
+  },
+  {
+    "key": "yang2023leandojo",
+    "type": "misc",
+    "title": "LeanDojo: Theorem Proving with Retrieval-Augmented Language Models",
+    "year": "2023",
+    "doi": "10.48550/arXiv.2306.15626",
+    "source": "arXiv DataCite DOI",
+    "status": "VERIFIED_DATACITE",
+    "token_f1": 1.0
+  },
+  {
+    "key": "azerbayev2023proofnet",
+    "type": "misc",
+    "title": "ProofNet: Autoformalizing and Formally Proving Undergraduate-Level Mathematics",
+    "year": "2023",
+    "doi": "10.48550/arXiv.2302.12433",
+    "source": "arXiv DataCite DOI",
+    "status": "VERIFIED_DATACITE",
+    "token_f1": 1.0
+  },
+  {
+    "key": "zheng2021minif2f",
+    "type": "misc",
+    "title": "MiniF2F: a cross-system benchmark for formal Olympiad-level mathematics",
+    "year": "2021",
+    "doi": "10.48550/arXiv.2109.00110",
+    "source": "arXiv DataCite DOI",
+    "status": "VERIFIED_DATACITE",
+    "token_f1": 1.0
+  },
+  {
+    "key": "schick2023toolformer",
+    "type": "misc",
+    "title": "Toolformer: Language Models Can Teach Themselves to Use Tools",
+    "year": "2023",
+    "doi": "10.48550/arXiv.2302.04761",
+    "source": "arXiv DataCite DOI",
+    "status": "VERIFIED_DATACITE",
+    "token_f1": 1.0
+  },
+  {
+    "key": "xin2024deepseekprover",
+    "type": "misc",
+    "title": "DeepSeek-Prover: Advancing Theorem Proving in LLMs through Large-Scale Synthetic Data",
+    "year": "2024",
+    "doi": "10.48550/arXiv.2405.14333",
+    "source": "arXiv DataCite DOI",
+    "status": "VERIFIED_DATACITE",
+    "token_f1": 1.0
+  },
+  {
+    "key": "kamath2019semparse",
+    "type": "misc",
+    "title": "A Survey on Semantic Parsing",
+    "year": "2018",
+    "doi": "10.48550/arXiv.1812.00978",
+    "source": "arXiv DataCite DOI",
+    "status": "VERIFIED_DATACITE",
+    "token_f1": 1.0
+  }
+]

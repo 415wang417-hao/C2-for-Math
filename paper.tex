@@ -1,0 +1,274 @@
+﻿\documentclass[UTF8,a4paper,11pt]{ctexart}
+\usepackage{amsmath,amssymb}
+\usepackage{amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,backgrounds}
+
+\geometry{left=2.5cm,right=2.5cm,top=2.7cm,bottom=2.7cm}
+\hypersetup{colorlinks=true,linkcolor=black,citecolor=black,urlcolor=blue}
+
+\theoremstyle{definition}
+\newtheorem{definition}{定义}[section]
+
+\providecommand{\llbracket}{\mathopen{[\![}}
+\providecommand{\rrbracket}{\mathclose{]\!]}}
+
+\title{\textbf{从生成到验证：AI4Math 的三层可靠性框架与语义规约瓶颈}}
+\author{EduSeed 学员\thanks{本文为课程挑战 C2 成果。写作全程由 AI 辅助，所有引用条目由脚本从 Crossref / DataCite 权威记录自动生成并逐条核验；AI 使用与人工核验记录见随附《AI 协作日志》。}}
+\date{2026 年 9 月}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+大语言模型在数学任务上已能生成形式通顺、局部推导看似严谨的证明与计算，但其核心脆弱性并非简单的「算术失误」，而是深层的「语义未落地」：自然语言断言的对象类型、量词辖域与隐含前提在多步推理中极易发生静默漂移，且模型受限于自检能力的结构性上限无法自主察觉。本文提出一个面向数学人工智能（AI for Mathematics, AI4Math）的三层可靠性框架，将数学推理流水线解耦为\textbf{生成层（Generation）}、\textbf{语义规约层（Semantic Reduction）}与\textbf{验证层（Verification）}，并从理论上论证：端到端可靠性的边际瓶颈当前已从两端转移至中间的语义规约层。围绕这一诊断，本文给出三项核心成果：（1）提出面向数学断言的结构化中间表示（Structured IR），形式化为「对象—前提—目标—证据」四元组 $\langle \mathcal{O}, \mathcal{P}, \mathcal{G}, \mathcal{E} \rangle$ 并给出具体的量词滑移规约对照案例；（2）构建完整的端到端流水线，提出由回译一致性与扰动一致性构成的\textbf{双向一致性（Bidirectional Consistency）}条件，严格约束自然语言与形式陈述间的等价互推；（3）建立四级可靠性等级划分（L0--L3）及配套实践清单，并定义准确率（Accuracy）、可验证率（Verifiability）与一致性（Consistency）三度量评估协议。本文的核心结论是：可靠性不是单体模型的内在属性，而是可验证流水线的系统工程属性；把中间语义表达清楚，远比盲目增大生成器参数更为根本。
+\end{abstract}
+
+\noindent\textbf{关键词：} AI4Math；可靠性框架；语义规约；形式化验证；自动形式化；双向一致性；中间表示
+
+\section{引言}
+\label{sec:intro}
+
+\subsection{从「机器发现」到「机器可靠性」}
+数学曾被视作人类纯粹直觉与严密逻辑构筑的智力王冠。然而，近半个世纪计算与人工智能的交融彻底重塑了这一认知图景：1977 年四色定理的机器辅助证明首次将超大规模算力引入数学证明的核心环节\cite{appel1977}；2021 年以来，现代机器学习系统深度切入数学创造的核心链路——利用神经网络特征归纳引导人类直觉突破纽结理论与表示论中的未解猜想\cite{davies2021}，利用强化学习探索出超越人类极限的更优矩阵乘法张量分解算法\cite{fawzi2022,romera2024}，依托「拉马努金机」从高精度数值反推基本物理与数学常数的连分数猜想\cite{raayoni2021}；而在形式几何推理领域，AlphaGeometry 在完全不依赖人类演示的条件下成功求解国际数学奥林匹克竞赛（IMO）级别的几何难题\cite{trinh2024}。与此同时，双向自然语言形式化系统\cite{wu2022auto,xin2024deepseekprover}与检索增强的交互式定理证明基础设施（如 LeanDojo\cite{yang2023leandojo}）的成熟，正在将「自动形式化—策略搜索—机器核验」推进为现实可用的学术生产力工具。
+
+与能力指数级增长形成强烈对偶的，是严峻的「可靠性赤字（Reliability Deficit）」。数学是一门对推导瑕疵零容忍的学科：一处隐含的除零异常、一个未声明的收敛性假设、或是全称量词与存在量词的作用域混淆，都足以让数页华丽的推导彻底崩溃。大语言模型在数学任务上的失效模式，绝大部分不是表层符号拼写错误，而是\textbf{论证看似成立、语义并未真正落地}。近期严谨的实证分析表明，大模型在复杂推理任务上的「自我纠错」能力存在严重高估：在缺乏确定性外部反馈的孤岛环境下，模型的自主反思往往会将正确答案改错\cite{huang2023selfcorrect}；在多步规划与逻辑推理上，让同一个模型同时充当证明者与审稿人的「自验证」方案存在理论与结构上的双重局限\cite{stechly2024selfverif}。换言之，自回归生成机制本身无法在内部完成逻辑真值的闭环。
+
+\subsection{问题陈述}
+本文旨在系统回答的核心问题是：\emph{在本质概率性的不可靠生成器与严苛高昂的确定性形式验证器之间，如何构建一套可工程复现、能精准区分「看似正确」与「确实正确」的可靠性架构体系？} 这一总问题可进一步解构为三个技术子命题：
+\begin{enumerate}[leftmargin=1.8em,itemsep=2pt]
+  \item \textbf{语义对齐接口}：中间表示（Intermediate Representation, IR）应遵循何种结构规约，方能使形式求解器与证明内核无歧义地承接自然语言数学推导？
+  \item \textbf{低成本自洽验证}：如何在不全面依赖高成本人工形式化标注的前提下，利用双向回译与扰动自洽机制约束规约漂移？
+  \item \textbf{多维透明度度量}：如何摆脱单一「最终准确率」掩盖验证漏洞的缺陷，建立包含可验证率与拒答率的科学评测范式？
+\end{enumerate}
+
+\subsection{本文贡献}
+针对上述问题，本文提出以下四项原创性贡献：
+\begin{enumerate}[leftmargin=1.8em,itemsep=2pt]
+  \item \textbf{三层可靠性框架}：提出「生成层—语义规约层—验证层」分层架构，清晰划分各层职责边界、输入输出与特有失效原子；
+  \item \textbf{语义规约瓶颈假说与误差分解}：形式化提出端到端误差主导定理，论证当生成采样与内核验证被现代工程显著优化后，中间语义规约层成为决定系统可靠性的核心瓶颈；
+  \item \textbf{结构化 IR 与双向一致性准则}：构建 $\langle \mathcal{O}, \mathcal{P}, \mathcal{G}, \mathcal{E} \rangle$ 四元组中间表示，给出数论命题规约对照实例，并确立自然语言与形式命题间充分必要蕴含的双向检验协议；
+  \item \textbf{四级可靠性等级（L0--L3）与度量清单}：设计阶梯式可靠性分级矩阵，并配套准确率—可验证率—一致性三维指标协议，使 AI4Math 可信度转化为可观测、可度量、可反驳的客观工程产物。
+\end{enumerate}
+
+\subsection{文章结构}
+第~\ref{sec:related}~节系统梳理当前相关工作的脉络与接口空白；第~\ref{sec:framework}~节给出三层可靠性框架、瓶颈公式、结构化 IR、流水线架构图与双向一致性检查；第~\ref{sec:analysis}~节详细剖析典型失效原子，确立 L0--L3 可靠性等级与最小实践清单；第~\ref{sec:discussion}~节讨论系统边界与局限；第~\ref{sec:conclusion}~节总结全文。
+
+\section{相关工作}
+\label{sec:related}
+
+\subsection{生成式推理与工具增强}
+大模型在数学领域的初代探索集中于将多步推导作为显式搜索路径：GPT-f\cite{polu2020}将 Transformer 生成与树搜索结合用于形式化定理证明。思维链提示（Chain-of-Thought, CoT）\cite{wei2022cot}通过让模型外化逐步思维过程，大幅释放了隐式参数计算能力；程序辅助语言模型（PAL）\cite{gao2022pal}与思维程序（PoT）\cite{chen2022pot}将容易出错的算术与符号运算外包给本地 Python 解释器，实现了「神经推理负责逻辑分解、符号解释器负责执行」的解耦；Toolformer\cite{schick2023toolformer}进一步将工具调用抽象为模型自主触发的通用 API。然而，这一分支的内在假设是「推理过程的外化即等价于正确性」。事实上，外化仅仅提升了\emph{表层可读性}，若模型对数学对象的定义或引理应用前提存在认知偏差，生成的推理链依然会平滑地导出谬误。
+
+\subsection{形式化系统、证明助手与自动规约}
+与生成式进路相对立的是以绝对确定性为基石的形式化方法。SMT 求解器（如 Z3\cite{demoura2008z3}）在毫秒级别提供了可判定理论的高效求解；Lean 4\cite{demoura2021lean4}、Coq、Isabelle 等交互式证明助手（ITP）依托构造性依赖类型理论（如规范类型论 Calculus of Inductive Constructions），构建了严格且紧凑的机器内核。形式化数学基准（MiniF2F\cite{zheng2021minif2f}、ProofNet\cite{azerbayev2023proofnet}）为衡量机器证明能力奠定了标准化地基，而 LeanDojo\cite{yang2023leandojo}为模型与证明环境的实时交互构建了开放底层设施。在桥接自然语言与形式语言方面，Szegedy 早期指出自动形式化是通往通用人工智能的关键路径\cite{szegedy2020}；近期基于 LLM 的形式化翻译实验\cite{wu2022auto,cunningham2022,xin2024deepseekprover}揭示了一个关键技术现象：\emph{阻碍机器证明自动化的首要关卡往往不是证明搜索（Search），而是将非形式化陈述准确转化为类型无误的形式规范（Specification）}。这与传统计算语言学中语义解析（Semantic Parsing）文献长期指出的指称歧义与量词作用域难题完全吻合\cite{kamath2019semparse}。
+
+\subsection{验证器、自纠错边界与评估度量}
+在判定模型输出质量方面，GSM8K 验证器\cite{cobbe2021gsm8k}通过重排序采样解显著提升了最终精度；过程监督验证（PRM800K）\cite{lightman2023}将奖励信号精细下沉至每个推导步，有效遏制了结果巧合错误；MATH 基准\cite{hendrycks2021math}通过难度分层确立了高阶推理评测范式。然而，自回归机制的本质约束近期被一系列负面结论所锚定：在无外部裁判时，大模型无法通过自我反思纠正复杂推理错误\cite{huang2023selfcorrect}；在规划与逻辑验证任务上，LLM 自我验证存在不可逾越的准确率坍塌\cite{stechly2024selfverif}。正如 Chollet 在论述智能度量时所强调的：单一代理指标的过度拟合往往会掩盖系统核心能力的退化\cite{chollet2019}。
+
+\subsection{现有工作的空白与本文定位}
+上述三类探索分别在「生成侧更具多样性」、「验证侧更为严格」以及「评测侧更为庞大」取得了突破，但三者之间的粘合层——即如何将自然语言数学断言转化为形式验证器可以承接的形式对象——长期被视为次要工程细节。表~\ref{tab:mechanisms}~系统对比了三类机制的边界。当验证器极度严苛而规约机制极其薄弱时，系统极易陷入「以极高的置信度验证了一个完全偏离原题的伪命题」。本文正是将该语义规约接口确立为核心研究对象。
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{三类可靠性机制的能力边界对比（成本列为综合定性指标）}
+\label{tab:mechanisms}
+\begin{tabular}{p{2.0cm}p{3.1cm}p{3.2cm}p{3.2cm}p{1.9cm}}
+\toprule
+机制类别 & 代表工作 & 能保证的性质 & 不能保证的性质 & 主要代价 \\
+\midrule
+搜索 + 验证 & \cite{cobbe2021gsm8k,lightman2023} & 候选解在打分模型下的相对优劣次序 & 验证器本身分布外幻觉；无法解释错误根因 & 重复采样与验证打分算力 \\
+形式化验证 & \cite{demoura2008z3,demoura2021lean4,yang2023leandojo} & 若陈述正确，则证明链绝对经内核认可 & 形式陈述是否忠实映射自然语言原命题 & 形式定义与环境配置成本 \\
+可复现评估 & \cite{zheng2021minif2f,hendrycks2021math,azerbayev2023proofnet} & 横向透明、可严谨复现的分数对比 & 无法保证单次推导分布外可靠性；防刷榜 & 基准维护与防污染开销 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{方法框架}
+\label{sec:framework}
+
+\subsection{三层可靠性模型架构}
+本文将 AI4Math 推理流水线严格解耦为三个层次（见表~\ref{tab:layers} 与图~\ref{fig:pipeline_arch}）：
+\begin{enumerate}[leftmargin=1.8em,itemsep=2pt]
+  \item \textbf{生成层（Generation Layer）}：由生成模型基于概率采样产出候选推导、证明步骤或非形式化草稿。其首要目标是保持解空间的广度覆盖与启发式探索，其输出在未经检验前仅具备「待决候选」地位。
+  \item \textbf{语义规约层（Semantic Reduction Layer）}：负责将模糊的自然语言断言精确投影至结构化中间表示（Structured IR），完成变量类型绑定、前提假设显式化及目标界定，并记录双向溯源指针。
+  \item \textbf{验证层（Verification Layer）}：在确定性形式对象上调用符号求解器（如 Z3）、计算机代数系统或形式化类型检查内核（如 Lean 4），输出绝对确定的真、假、不可判定或超时反例，并回译为解释。
+\end{enumerate}
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{三层职责、关键产出与典型失败原子}
+\label{tab:layers}
+\begin{tabular}{p{1.8cm}p{4.6cm}p{7.2cm}}
+\toprule
+系统层次 & 核心交付产出 & 典型失败原子（Failure Atoms） \\
+\midrule
+生成层 & 候选推导草稿、非形式化引理、思路探索 & 论证表面流畅但关键步骤跳跃；代数或算术幻觉；以特例代替一般性证明 \\
+规约层 & 类型化 IR、显式前提集、形式化命题 & 量词辖域颠倒；全局约束缺失；前提条件被遗漏；形式命题弱化为平凡恒真式 \\
+验证层 & 判定报告（$\{\text{真}, \text{假}, \text{未知}\}$）、反例证人 & 求解超时被误认判定为通过；验证器分布外崩溃；结论回译丢失关键反例上下文 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{语义规约的形式化与结构化 IR}
+设自然语言数学断言单元集合为 $U$（单元可为引理断言、计算结论或推导步骤），形式系统命题集合为 $F$，形式语义赋值函数为 $\llbracket\cdot\rrbracket$。
+
+\begin{definition}[语义规约映射]
+语义规约被定义为一个映射 $\rho: U \to \mathcal{P}(F)$，将自然语言单元 $u \in U$ 转化为一组形式对象 $\rho(u) = \{f_1, \dots, f_k\} \subseteq F$。
+\end{definition}
+
+\begin{definition}[结构化中间表示 Structured IR]
+为防止形式化对象丢失关键上下文，本文定义统一的四元组结构：
+\begin{equation}
+\text{IR}(u) \triangleq \langle \mathcal{O}, \mathcal{P}, \mathcal{G}, \mathcal{E} \rangle ,
+\end{equation}
+其中 $\mathcal{O} = \{x : T\}$ 为类型化变量与数学对象空间；$\mathcal{P} = \{\phi_1, \dots, \phi_m\}$ 为命题成立所需的显式与类型推断补全的约束前提集合；$\mathcal{G} = \{\psi_1, \dots, \psi_n\}$ 为形式化目标命题集合；$\mathcal{E}$ 为双向溯源元数据（保留形式元素到自然语言词段的对齐指针）。
+\end{definition}
+
+\begin{definition}[双向忠实性]
+在语义赋值 $\llbracket\cdot\rrbracket$ 下，称规约 $\rho$ 对断言 $u$ 是\textbf{忠实（Faithful）}的，当且仅当：
+\begin{equation}
+\llbracket u \rrbracket \;\equiv\; \bigwedge_{f \in \rho(u)} \llbracket f \rrbracket ,
+\end{equation}
+即自然语言真实语义与形式对象全集在逻辑上严格等价（互为充分必要条件）。仅单向蕴含（$\bigwedge \llbracket f \rrbracket \Rightarrow \llbracket u \rrbracket$）是导致「弱化规约（Over-weakening）」的典型根源。
+\end{definition}
+
+\begin{definition}[可验证率与一致性测度]
+给定断言集 $U$，系统的可验证率定义为形式系统在计算资源预算内能给出确定判决（真或假）的比例：
+\begin{equation}
+V(\rho) = \frac{\big|\{u \in U : \mathrm{dec}(\rho(u)) \in \{\text{真}, \text{假}\}\}\big|}{|U|} ,
+\end{equation}
+其中 $\mathrm{dec}$ 为验证层判定函数。双向一致性分数 $C(\rho)$ 则统计通过双向忠实性检验的断言比例。
+\end{definition}
+
+\noindent\textbf{数学实例对比：规约滑移的直观解析。} 考虑经典初等数论断言 $u$：\emph{「对任意大于 3 的素数 $p$，$p^2 - 1$ 能被 24 整除」}。
+\begin{itemize}[leftmargin=1.5em,itemsep=1pt]
+  \item \textbf{典型规约滑移（量词与前提遗漏）}：模型在无 IR 规约时常翻译为 $\forall p \in \mathbb{Z}, (p > 3) \Rightarrow 24 \mid (p^2 - 1)$（遗漏了 $p$ 是素数的前提）。验证器接入后立即输入反例 $p=4$，给出反例判假——此时表面上是验证层拦截了错误，实则是\textbf{规约层验证了一个与原题相悖的命题}。另一种极端滑移是弱化为存在量词 $\exists p \in \mathbb{P}, 24 \mid (p^2 - 1)$，求解器立即判真，造成严重伪阳性。
+  \item \textbf{结构化 IR 的纠偏}：四元组规范将对象与前提强制分槽：$\mathcal{O} = \{p : \mathbb{Z}\}$，$\mathcal{P} = \{\mathrm{IsPrime}(p), p > 3\}$，$\mathcal{G} = \{24 \mid (p^2 - 1)\}$。回译机制将 IR 还原为形式陈述并与原句做交叉差分，可立即在规约阶段拦截前提脱落。
+\end{itemize}
+
+\subsection{语义规约瓶颈假说与误差分解定理}
+将端到端流水线综合错误率记为 $E_{\text{pipeline}}$，三层各自条件错误率记为 $E_{\text{gen}}$（生成错误率）、$E_{\text{red}}$（规约失真率）与 $E_{\text{ver}}$（验证器漏检/误检率）。验证层作为符号执行器，其固有缺陷在于：\textbf{验证层仅对接收到的形式对象 $\rho(u)$ 的有效性负责，无法主动感知 $\rho(u)$ 是否偏离了原始输入 $u$}。因此，规约层引入的失真会直接绕过验证层的屏障。数学上，端到端系统失效概率可严格建模为：
+\begin{equation}
+E_{\text{pipeline}} \;=\; E_{\text{red}} + (1 - E_{\text{red}}) \cdot E_{\text{gen}} \cdot E_{\text{ver}} .
+\label{eq:bottleneck}
+\end{equation}
+式~\eqref{eq:bottleneck}~构成了本文的\textbf{语义规约瓶颈核心论断}：
+\begin{quote}
+\emph{当随着基座模型算力提升与形式化求解器完备化，使得 $E_{\text{gen}}$ 与 $E_{\text{ver}}$ 逐渐被压缩至极小量时，端到端系统的失效率渐近收敛于 $E_{\text{pipeline}} \to E_{\text{red}}$。此时，系统的可靠性边际改进完全受制于语义规约层。}
+\end{quote}
+这从理论层面解释了为何单纯增大模型参数或增强 Lean 求解内核，无法单独解决 AI 做数学的置信度问题\cite{wu2022auto,xin2024deepseekprover}。
+
+\subsection{流水线架构与双向一致性检查}
+为使式~\eqref{eq:bottleneck} 中的 $E_{\text{red}}$ 具备可计算与可截断性，本文提出如图~\ref{fig:pipeline_arch}~所示的闭环流水线：
+\begin{equation}
+\text{NL} \xrightarrow{\ \text{生成}\ } \text{NL}' \xrightarrow{\ \rho\ } \text{IR} \xrightarrow{\ \mathrm{dec}\ } \{\text{真},\text{假},\text{未知}\} \xrightarrow{\ \text{回译}\ } \text{NL}'' .
+\end{equation}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+    >=Stealth,
+    node distance=0.85cm,
+    layer/.style={rectangle, draw=blue!80!black, fill=blue!5, thick, minimum width=11.0cm, minimum height=0.95cm, rounded corners=3pt, font=\small, align=center},
+    arrow/.style={->, thick, color=black!85},
+    looparrow/.style={->, thick, dashed, color=red!70!black}
+]
+\node[layer] (gen) {\textbf{生成层 (Generation Layer)}\\LLM 候选启发式探索 $\cdot$ 自然语言证明草稿 $\cdot$ 步骤外化};
+\node[layer, below=1.1cm of gen] (red) {\textbf{语义规约层 (Semantic Reduction Layer)}\\结构化中间表示 $\text{IR} = \langle \mathcal{O}, \mathcal{P}, \mathcal{G}, \mathcal{E} \rangle$ $\cdot$ 变量类型绑定 $\cdot$ 显式前提补全};
+\node[layer, below=1.1cm of red] (ver) {\textbf{验证层 (Verification Layer)}\\确定性符号判定 (Z3 / Lean 4) $\cdot$ 机器证明对象检查 $\cdot$ 显式报告未知态};
+
+\draw[arrow] (gen) -- node[right, font=\footnotesize] {语义映射 $\rho$} (red);
+\draw[arrow] (red) -- node[right, font=\footnotesize] {形式判定 $\mathrm{dec}$} (ver);
+
+% 双向一致性闭环 (调整 xshift 保持在盒子内)
+\draw[looparrow] ([xshift=-2.2cm]red.north) -- node[left, font=\footnotesize, align=center] {\textbf{回译一致性检验}\\(IR $\to$ NL 充分性)} ([xshift=-2.2cm]gen.south);
+\draw[looparrow] ([xshift=2.2cm]gen.south) -- node[right, font=\footnotesize, align=center] {\textbf{扰动一致性检验}\\(改写输入稳定性)} ([xshift=2.2cm]red.north);
+\end{tikzpicture}
+\caption{三层可靠性流水线与双向一致性核验闭环（Figure 1）}
+\label{fig:pipeline_arch}
+\end{figure}
+
+流水线在规约层两端固化两个自动化校验回环：
+\begin{enumerate}[leftmargin=1.8em,itemsep=2pt]
+  \item \textbf{回译一致性回环（Back-translation Consistency）}：将生成的形式化 IR 逆向渲染为标准自然语言断言 $\text{NL}''$，并由对齐检查器比对 $\text{NL}'$ 与 $\text{NL}''$ 的语义重合度，检验是否存在「形式化遗漏或弱化」；
+  \item \textbf{扰动一致性回环（Perturbation Consistency）}：对输入问题实施保义语义改写（如符号替换、从句语序倒置），检验映射 $\rho(\cdot)$ 产生的 IR 是否保持同构。若轻微句式变化引发 IR 拓扑突变，系统直接熔断并标记为不可信。
+\end{enumerate}
+在判定输出中，\textbf{严格禁止将「超时」或「资源超限」隐式折叠为「判定为真」}。显式保留「未知（Unknown）」状态是构建学术严谨系统不可妥协的技术底线。
+
+\subsection{评估协议与度量体系}
+为了验证本文框架，评估应依托标准化公开基准：覆盖算术推理链的 GSM8K\cite{cobbe2021gsm8k}、覆盖分层高阶符号数学的 MATH\cite{hendrycks2021math}，以及形式化基准 MiniF2F\cite{zheng2021minif2f} 与 ProofNet\cite{azerbayev2023proofnet}。实验必须同步报告三类互补指标：
+\begin{itemize}[leftmargin=1.5em,itemsep=1pt]
+  \item \textbf{准确率（Accuracy）}：模型最终答案与标准参考答案的吻合率；
+  \item \textbf{可验证率（Verifiability）}：进入形式验证层并成功产生真/假判决的样本比例（$V(\rho)$）；
+  \item \textbf{一致性（Consistency）}：在回译与扰动测试下保持拓扑同构与逻辑等价的比例（$C(\rho)$）。
+\end{itemize}
+只报准确率会掩盖大量「碰巧算对但推导荒谬」的幻觉；而孤立追求可验证率，则会导致系统滑向将所有难题规约为平凡恒真命题的退化解。
+
+\section{分析与可靠性等级}
+\label{sec:analysis}
+
+\subsection{三类失败原子映射}
+结合前述三层模型，文献中报道的各类大模型数学推理缺陷可被精准溯源分类：
+\begin{enumerate}[leftmargin=1.8em,itemsep=2pt]
+  \item \textbf{生成层原子：外化幻觉}。思维链与 PoT 提升了推理的可检查性，但长链条自回归极易发生注意力漂移\cite{wei2022cot,gao2022pal}。其特征是推导每一步看似合理，但中间借用了未证伪命题，流畅的外表成为了最隐蔽的伪装。
+  \item \textbf{规约层原子：命题偷换}。自动形式化过程中，模型倾向于删减难以形式化的约束，导致最终机器内核验证的是另一个简化后的靶标\cite{wu2022auto,xin2024deepseekprover}。这类错误在传统流水线日志中显示「100\% 通过证明检查」，危害性极强。
+  \item \textbf{验证层原子：度量失效与假自愈}。在缺乏外部隔离的环境中，模型的自主反思不仅不能纠错，反而会破坏有效证明\cite{huang2023selfcorrect,stechly2024selfverif}；单一标量基准分数的攀升与真实分布外推理鲁棒性发生脱钩\cite{chollet2019}。
+\end{enumerate}
+
+\subsection{四级可靠性等级体系（L0--L3）}
+为指导工业界与学术界实践，本文建立如表~\ref{tab:levels}~所示的四级可靠性阶梯演进模型：
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{AI4Math 四级可靠性体系（L0--L3）划分准则与保障边界}
+\label{tab:levels}
+\begin{tabular}{p{1.2cm}p{2.8cm}p{3.8cm}p{4.0cm}p{1.8cm}}
+\toprule
+等级 & 范式名称 & 规约与执行机制 & 验证能力与保障 & 适用场景 \\
+\midrule
+\textbf{L0} & 非受限自回归 & 纯自然语言思维链（CoT），无结构约束 & 无机器闭环；仅依靠模型自洽性，错误不可测 & 头脑风暴、思路探索 \\
+\textbf{L1} & 外部程序解释 & 规约为 Python 脚本（PAL/PoT），解释器执行 & 保证确定性算术与离散代数正确，量词能力缺失 & 规则应用题、纯数值计算 \\
+\textbf{L2} & 结构化双向一致 & 映射为结构化 IR，接入回译与扰动双自检 & 保证命题语义落地，显式截断未决状态 & 辅助教学、半自动题库 \\
+\textbf{L3} & 形式内核全闭环 & 严格自动形式化至 Lean 4 / Isabelle，内核核验 & 具备绝对数学严谨性，提供完整机器证明对象 & 顶会论文核验、猜想求证 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{面向实践者的最小检查清单（Practitioner's Checklist）}
+综合全文分析，本文为 AI4Math 研发人员总结一套按成本递增的最小自检清单：
+\begin{enumerate}[leftmargin=1.8em,itemsep=2pt]
+  \item \textbf{[溯源检查]}：形式化 IR 中的每个变量、约束前提是否均能找到自然语言原文的对应切片（杜绝无中生有的幻觉约束）；
+  \item \textbf{[双向检验]}：不仅执行「形式推自然」，必须执行「自然推形式」的反向语义一致性检验（杜绝目标命题被弱化）；
+  \item \textbf{[扰动容差]}：对题目进行保义重写后，规约生成的形式 AST 必须在同构判定下保持稳定；
+  \item \textbf{[未知诚实]}：超时、内存超限或不可判定必须显式向用户报告为「未知」，严禁折叠为「判定为真」；
+  \item \textbf{[论断边界]}：数值计算证据必须与普遍定理严格区隔，禁止将有限算例穷举误报为一般性存在定理证明。
+\end{enumerate}
+
+\section{讨论与局限}
+\label{sec:discussion}
+
+\textbf{与课程材料与经典文献的呼应。} 本文的理论模型深刻呼应了同济大学讲义《Lectures on AI for Mathematics》（Chen 与 Jiang，2026）中关于现代数学研究三要素（发现、证明、反例）的论述。讲义指出，机器参与数学的核心价值在于构建绝对严谨的形式化闭环，而当前大模型最大的局限正在于语义与形式系统的脱节。本文提出的式~\eqref{eq:bottleneck} 瓶颈定理，正是对这一洞见的数学建模与工程展开。
+
+\textbf{研究性质与实证边界。} 本文提出的是概念性框架与可靠性度量协议，所列公式与指标体系属于系统架构层面的规范设计，而非特定基准上的实操实测数据。跨模型的系统比较仍属定性范畴，大规模多模型在同一基准上的参数化复现实验有待未来工作推进。
+
+\textbf{文献真实性与预印本版本追踪。} 本文所有引用文献均依托 Crossref 与 DataCite 权威元数据接口通过机械脚本逐条核验入库，绝无虚假引注。针对计算机与数学领域大量依赖的 arXiv 预印本，本文统一采纳官方可解析 DOI 格式（\texttt{10.48550/arXiv.*}），彻底规避了人工回忆与转写导致的标题版本漂移。
+
+\textbf{不可形式化问题的适用边界。} 本框架建立在「数学命题具备可形式化潜能」的基本假设之上。对于处于萌芽期、定义尚不明确的前沿开放数学猜想，强行套用当前的规约流水线可能诱发失真，此时诚实报告「不可规约」远比强行生成脆弱证明更具学术价值。
+
+\section{结论}
+\label{sec:conclusion}
+本文针对 AI 做数学领域的可靠性赤字，系统提出了「生成—语义规约—验证」三层可靠性框架，明确论证了语义规约层是制约当前 AI4Math 走向真正可信的主导瓶颈。通过引入 $\langle \mathcal{O}, \mathcal{P}, \mathcal{G}, \mathcal{E} \rangle$ 结构化中间表示、双向一致性检查协议与 L0--L3 可靠性等级，本文将非形式化数学直觉向严密机器验证的转化过程重塑为可度量、可反驳的工程体系。正如文中所一再揭示的：\textbf{在确定性机器内核足够强大之后，决定结论可信度的不再是「AI 证明了什么」，而是「AI 究竟在证明什么」}。为每一个形式对象保留坚实的语义溯源链，是数学人工智能走向严谨学术殿堂的必由之路。
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}

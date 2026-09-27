@@ -1,0 +1,40 @@
+{
+  "status": "PASS",
+  "bib_count": 27,
+  "cited_count": 27,
+  "missing_in_bib": [],
+  "unused_in_tex": [],
+  "environments": {
+    "enumerate": {
+      "begin": 6,
+      "end": 6,
+      "balanced": true
+    },
+    "table": {
+      "begin": 3,
+      "end": 3,
+      "balanced": true
+    },
+    "tabular": {
+      "begin": 3,
+      "end": 3,
+      "balanced": true
+    },
+    "equation": {
+      "begin": 5,
+      "end": 5,
+      "balanced": true
+    },
+    "definition": {
+      "begin": 4,
+      "end": 4,
+      "balanced": true
+    },
+    "figure": {
+      "begin": 1,
+      "end": 1,
+      "balanced": true
+    }
+  },
+  "brace_balance": true
+}

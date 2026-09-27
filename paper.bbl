@@ -1,0 +1,171 @@
+\begin{thebibliography}{10}
+
+\bibitem{appel1977}
+Kenneth Appel and Wolfgang Haken.
+\newblock {The Solution of the Four-Color-Map Problem}.
+\newblock {\em Scientific American}, 237(4):108--121, 1977.
+
+\bibitem{azerbayev2023proofnet}
+Zhangir Azerbayev, Bartosz Piotrowski, Hailey Schoelkopf, Edward~W. Ayers,
+  Dragomir Radev, and Jeremy Avigad.
+\newblock {ProofNet: Autoformalizing and Formally Proving Undergraduate-Level
+  Mathematics}.
+\newblock arXiv preprint arXiv:2302.12433, 2023.
+
+\bibitem{chen2022pot}
+Wenhu Chen, Xueguang Ma, Xinyi Wang, and William~W. Cohen.
+\newblock {Program of Thoughts Prompting: Disentangling Computation from
+  Reasoning for Numerical Reasoning Tasks}.
+\newblock arXiv preprint arXiv:2211.12588, 2022.
+
+\bibitem{chollet2019}
+François Chollet.
+\newblock {On the Measure of Intelligence}.
+\newblock arXiv preprint arXiv:1911.01547, 2019.
+
+\bibitem{cobbe2021gsm8k}
+Karl Cobbe, Vineet Kosaraju, Mohammad Bavarian, Mark Chen, Heewoo Jun, Lukasz
+  Kaiser, Matthias Plappert, Jerry Tworek, Jacob Hilton, Reiichiro Nakano,
+  Christopher Hesse, and John Schulman.
+\newblock {Training Verifiers to Solve Math Word Problems}.
+\newblock arXiv preprint arXiv:2110.14168, 2021.
+
+\bibitem{cunningham2022}
+Garett Cunningham, Razvan Bunescu, and David Juedes.
+\newblock {Towards Autoformalization of Mathematics and Code Correctness:
+  Experiments with Elementary Proofs}.
+\newblock {\em Proceedings of the 1st Workshop on Mathematical Natural Language
+  Processing (MathNLP)}, pages 25--32, 2022.
+
+\bibitem{davies2021}
+Alex Davies, Petar Veličković, Lars Buesing, Sam Blackwell, Daniel Zheng,
+  Nenad Tomašev, Richard Tanburn, Peter Battaglia, Charles Blundell, András
+  Juhász, Marc Lackenby, Geordie Williamson, Demis Hassabis, and Pushmeet
+  Kohli.
+\newblock {Advancing mathematics by guiding human intuition with AI}.
+\newblock {\em Nature}, 600(7887):70--74, 2021.
+
+\bibitem{demoura2008z3}
+Leonardo de~Moura and Nikolaj Bjørner.
+\newblock {Z3: An Efficient SMT Solver}.
+\newblock {\em Lecture Notes in Computer Science}, pages 337--340, 2008.
+
+\bibitem{fawzi2022}
+Alhussein Fawzi, Matej Balog, Aja Huang, Thomas Hubert, Bernardino
+  Romera-Paredes, Mohammadamin Barekatain, Alexander Novikov, Francisco~J.
+  R.~Ruiz, Julian Schrittwieser, Grzegorz Swirszcz, David Silver, Demis
+  Hassabis, and Pushmeet Kohli.
+\newblock {Discovering faster matrix multiplication algorithms with
+  reinforcement learning}.
+\newblock {\em Nature}, 610(7930):47--53, 2022.
+
+\bibitem{gao2022pal}
+Luyu Gao, Aman Madaan, Shuyan Zhou, Uri Alon, Pengfei Liu, Yiming Yang, Jamie
+  Callan, and Graham Neubig.
+\newblock {PAL: Program-aided Language Models}.
+\newblock arXiv preprint arXiv:2211.10435, 2022.
+
+\bibitem{hendrycks2021math}
+Dan Hendrycks, Collin Burns, Saurav Kadavath, Akul Arora, Steven Basart, Eric
+  Tang, Dawn Song, and Jacob Steinhardt.
+\newblock {Measuring Mathematical Problem Solving With the MATH Dataset}.
+\newblock arXiv preprint arXiv:2103.03874, 2021.
+
+\bibitem{huang2023selfcorrect}
+Jie Huang, Xinyun Chen, Swaroop Mishra, Huaixiu~Steven Zheng, Adams~Wei Yu,
+  Xinying Song, and Denny Zhou.
+\newblock {Large Language Models Cannot Self-Correct Reasoning Yet}.
+\newblock arXiv preprint arXiv:2310.01798, 2023.
+
+\bibitem{kamath2019semparse}
+Aishwarya Kamath and Rajarshi Das.
+\newblock {A Survey on Semantic Parsing}.
+\newblock arXiv preprint arXiv:1812.00978, 2018.
+
+\bibitem{lightman2023}
+Hunter Lightman, Vineet Kosaraju, Yura Burda, Harri Edwards, Bowen Baker, Teddy
+  Lee, Jan Leike, John Schulman, Ilya Sutskever, and Karl Cobbe.
+\newblock {Let's Verify Step by Step}.
+\newblock arXiv preprint arXiv:2305.20050, 2023.
+
+\bibitem{demoura2021lean4}
+Leonardo~de Moura and Sebastian Ullrich.
+\newblock {The Lean 4 Theorem Prover and Programming Language}.
+\newblock {\em Lecture Notes in Computer Science}, pages 625--635, 2021.
+
+\bibitem{polu2020}
+Stanislas Polu and Ilya Sutskever.
+\newblock {Generative Language Modeling for Automated Theorem Proving}.
+\newblock arXiv preprint arXiv:2009.03393, 2020.
+
+\bibitem{raayoni2021}
+Gal Raayoni, Shahar Gottlieb, Yahel Manor, George Pisha, Yoav Harris, Uri
+  Mendlovic, Doron Haviv, Yaron Hadad, and Ido Kaminer.
+\newblock {Generating conjectures on fundamental constants with the Ramanujan
+  Machine}.
+\newblock {\em Nature}, 590(7844):67--73, 2021.
+
+\bibitem{romera2024}
+Bernardino Romera-Paredes, Mohammadamin Barekatain, Alexander Novikov, Matej
+  Balog, M.~Pawan Kumar, Emilien Dupont, Francisco J.~R. Ruiz, Jordan~S.
+  Ellenberg, Pengming Wang, Omar Fawzi, Pushmeet Kohli, and Alhussein Fawzi.
+\newblock {Mathematical discoveries from program search with large language
+  models}.
+\newblock {\em Nature}, 625(7995):468--475, 2024.
+
+\bibitem{schick2023toolformer}
+Timo Schick, Jane Dwivedi-Yu, Roberto Dessì, Roberta Raileanu, Maria Lomeli,
+  Luke Zettlemoyer, Nicola Cancedda, and Thomas Scialom.
+\newblock {Toolformer: Language Models Can Teach Themselves to Use Tools}.
+\newblock arXiv preprint arXiv:2302.04761, 2023.
+
+\bibitem{stechly2024selfverif}
+Kaya Stechly, Karthik Valmeekam, and Subbarao Kambhampati.
+\newblock {On the Self-Verification Limitations of Large Language Models on
+  Reasoning and Planning Tasks}.
+\newblock arXiv preprint arXiv:2402.08115, 2024.
+
+\bibitem{szegedy2020}
+Christian Szegedy.
+\newblock {A Promising Path Towards Autoformalization and General Artificial
+  Intelligence}.
+\newblock {\em Lecture Notes in Computer Science}, pages 3--20, 2020.
+
+\bibitem{trinh2024}
+Trieu~H. Trinh, Yuhuai Wu, Quoc~V. Le, He~He, and Thang Luong.
+\newblock {Solving olympiad geometry without human demonstrations}.
+\newblock {\em Nature}, 625(7995):476--482, 2024.
+
+\bibitem{wei2022cot}
+Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten Bosma, Brian Ichter, Fei Xia,
+  Ed~Chi, Quoc Le, and Denny Zhou.
+\newblock {Chain-of-Thought Prompting Elicits Reasoning in Large Language
+  Models}.
+\newblock arXiv preprint arXiv:2201.11903, 2022.
+
+\bibitem{wu2022auto}
+Yuhuai Wu, Albert~Q. Jiang, Wenda Li, Markus~N. Rabe, Charles Staats, Mateja
+  Jamnik, and Christian Szegedy.
+\newblock {Autoformalization with Large Language Models}.
+\newblock arXiv preprint arXiv:2205.12615, 2022.
+
+\bibitem{xin2024deepseekprover}
+Huajian Xin, Daya Guo, Zhihong Shao, Zhizhou Ren, Qihao Zhu, Bo~Liu, Chong
+  Ruan, Wenda Li, and Xiaodan Liang.
+\newblock {DeepSeek-Prover: Advancing Theorem Proving in LLMs through
+  Large-Scale Synthetic Data}.
+\newblock arXiv preprint arXiv:2405.14333, 2024.
+
+\bibitem{yang2023leandojo}
+Kaiyu Yang, Aidan~M. Swope, Alex Gu, Rahul Chalamala, Peiyang Song, Shixing Yu,
+  Saad Godil, Ryan Prenger, and Anima Anandkumar.
+\newblock {LeanDojo: Theorem Proving with Retrieval-Augmented Language Models}.
+\newblock arXiv preprint arXiv:2306.15626, 2023.
+
+\bibitem{zheng2021minif2f}
+Kunhao Zheng, Jesse~Michael Han, and Stanislas Polu.
+\newblock {MiniF2F: a cross-system benchmark for formal Olympiad-level
+  mathematics}.
+\newblock arXiv preprint arXiv:2109.00110, 2021.
+
+\end{thebibliography}
